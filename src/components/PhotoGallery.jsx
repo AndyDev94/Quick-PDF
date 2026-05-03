@@ -591,7 +591,7 @@ const PhotoGallery = ({ photos, scans = [], setPhotos, onAddMore, onEdit, onHome
                   <h4 className="text-white font-bold mb-2">How to Use</h4>
                   <ul className="list-disc pl-4 space-y-2">
                     <li>Tap <strong>"Let's Start"</strong> to open the camera or seamlessly import existing photos from your device.</li>
-                    <li>In <strong>Manual Mode</strong>, enjoy precise, hands-on edge control, or let <strong>Smart Crop</strong> automatically detect and straighten skewed paper.</li>
+                    <li>In camera's <strong>Manual Mode</strong>, enjoy precise, hands-on edge control, or let <strong>Smart Crop</strong> automatically detect and straighten skewed paper.</li>
                     <li>Edit colors, brightness, and manually crop each scan if needed.</li>
                     <li>Reorder, annotate, and compile all scans into a single, high-quality PDF.</li>
                   </ul>
