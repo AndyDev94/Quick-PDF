@@ -403,7 +403,7 @@ const PhotoGallery = ({ photos, scans = [], setPhotos, onAddMore, onEdit, onHome
               initial={{ opacity: 0, scale: 0.95, y: 40 }} 
               animate={{ opacity: 1, scale: 1, y: 0 }} 
               exit={{ opacity: 0, scale: 0.95, y: 40 }} 
-              className="relative w-full max-w-lg bg-slate-900/80 backdrop-blur-3xl border border-white/10 rounded-[4rem] p-10 md:p-16 shadow-[0_50px_100px_rgba(0,0,0,0.8)] mx-4"
+              className="relative w-full max-w-lg bg-slate-900 border border-white/10 rounded-[3rem] p-10 md:p-16 shadow-[0_50px_100px_rgba(0,0,0,0.8)]"
             >
               {/* Definitive Corner Close Button */}
               <button 
@@ -532,12 +532,12 @@ const PhotoGallery = ({ photos, scans = [], setPhotos, onAddMore, onEdit, onHome
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 50, opacity: 0 }}
-            className="fixed bottom-6 inset-x-6 z-[5000] max-w-lg mx-auto"
+            className="fixed bottom-6 inset-x-0 z-[5000] flex justify-center px-4"
           >
-            <div className="bg-slate-900/80 backdrop-blur-3xl border border-white/10 rounded-[2rem] px-8 py-5 shadow-2xl flex items-center justify-between gap-6 overflow-hidden relative">
+            <div className="bg-slate-900 border border-white/10 rounded-full px-6 py-4 shadow-2xl flex items-center justify-center gap-4 overflow-hidden relative max-w-full">
                 <div className="absolute inset-0 bg-indigo-500/5 animate-pulse pointer-events-none" />
-                <div className="flex items-center gap-4 relative z-10">
-                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shrink-0" />
+                <div className="flex items-center gap-3 relative z-10 text-center">
+                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shrink-0 hidden sm:block" />
                     <p className="text-[10px] font-black uppercase tracking-[0.1em] text-white/90 leading-tight">
                         <span className="text-red-500">Data Safety:</span> We do not store your data. Everything is local to this device.
                     </p>
@@ -590,7 +590,7 @@ const PhotoGallery = ({ photos, scans = [], setPhotos, onAddMore, onEdit, onHome
                 <div>
                   <h4 className="text-white font-bold mb-2">How to Use</h4>
                   <ul className="list-disc pl-4 space-y-2">
-                    <li>Tap <strong>"Let's Start"</strong> to open the camera and scan documents.</li>
+                    <li>Tap <strong>"Let's Start"</strong> to open the camera or seamlessly import existing photos from your device.</li>
                     <li>Use <strong>Manual Mode</strong> for precise, hands-on edge control, or let <strong>Smart Crop</strong> automatically detect and straighten skewed paper.</li>
                     <li>Edit colors, brightness, and manually crop each scan if needed.</li>
                     <li>Reorder, annotate, and compile all scans into a single, high-quality PDF.</li>
