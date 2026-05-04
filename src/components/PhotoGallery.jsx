@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Image as ImageIcon, Home, Download, Plus, Settings2, Camera, FileText, X, Trash2, Layout, Info } from 'lucide-react';
+import { Image as ImageIcon, Home, Download, Plus, Settings2, Camera, FileText, X, Trash2, Layout, Info, Smartphone, Share, Share2, PlusSquare } from 'lucide-react';
 
 // Modular Components
 import PhotoItem from './PhotoItem';
@@ -9,10 +9,12 @@ import Lightbox from './Lightbox';
 import ExportModal from './ExportModal';
 import RearrangeModal from './RearrangeModal';
 
-const PhotoGallery = ({ photos, scans = [], setPhotos, onAddMore, onEdit, onHome, onDeleteScan, onOpenScan, onGenerate, onUpload, autoOpenExport, onExportOpened }) => {
+const PhotoGallery = ({ photos, scans = [], setPhotos, onAddMore, onEdit, onHome, onDeleteScan, onOpenScan, onGenerate, onUpload, autoOpenExport, onExportOpened, deferredPrompt }) => {
   // UI State
   const [showExportModal, setShowExportModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [showPwaMenu, setShowPwaMenu] = useState(false);
+  const [showIosInstallModal, setShowIosInstallModal] = useState(false);
 
   // Auto-open Export Modal if requested
   React.useEffect(() => {
@@ -101,14 +103,64 @@ const PhotoGallery = ({ photos, scans = [], setPhotos, onAddMore, onEdit, onHome
     <div className="flex flex-col min-h-screen bg-slate-950 font-outfit text-slate-200">
       {/* 🚀 HEADER */}
       <header className="h-20 px-6 grid grid-cols-[1fr_2fr_1fr] items-center bg-black/40 backdrop-blur-3xl border-b border-white/5 z-[100] safe-top shrink-0">
-        <div className="flex items-center">
-            {photos.length > 0 && (
+        <div className="flex items-center relative">
+            {photos.length > 0 ? (
                 <button 
                     onClick={handleHomeClick}
                     className="p-2.5 bg-indigo-500/10 rounded-xl border border-indigo-500/20 text-indigo-400 hover:bg-indigo-500/20 active:scale-90 transition-all shadow-lg shadow-indigo-500/10"
                 >
                     <Home className="w-5 h-5" />
                 </button>
+            ) : (
+                <div className="relative">
+                    <button 
+                        onClick={() => setShowPwaMenu(!showPwaMenu)}
+                        className={`p-2.5 rounded-xl border transition-all active:scale-90 ${showPwaMenu ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-400' : 'bg-white/5 border-white/10 text-slate-400 hover:text-white hover:bg-white/10'}`}
+                    >
+                        <Smartphone className="w-5 h-5" />
+                    </button>
+
+                    <AnimatePresence>
+                        {showPwaMenu && (
+                            <motion.div 
+                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                className="absolute top-14 left-0 w-48 bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-2 z-[200] overflow-hidden"
+                            >
+                                <button 
+                                    onClick={async () => {
+                                        setShowPwaMenu(false);
+                                        if (deferredPrompt) {
+                                            deferredPrompt.prompt();
+                                            const { outcome } = await deferredPrompt.userChoice;
+                                            console.log(`User response to the install prompt: ${outcome}`);
+                                        } else {
+                                            alert("Native app install is not available on this browser. Try 'Add to Home Screen' instead.");
+                                        }
+                                    }}
+                                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors text-left"
+                                >
+                                    <Download className="w-4 h-4 text-indigo-400" />
+                                    <span className="text-xs font-bold text-white uppercase tracking-widest">Install App</span>
+                                </button>
+                                
+                                <div className="h-px bg-white/5 my-1 mx-2" />
+
+                                <button 
+                                    onClick={() => {
+                                        setShowPwaMenu(false);
+                                        setShowIosInstallModal(true);
+                                    }}
+                                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors text-left"
+                                >
+                                    <PlusSquare className="w-4 h-4 text-slate-400" />
+                                    <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">Add to Home</span>
+                                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
             )}
         </div>
 
@@ -611,6 +663,66 @@ const PhotoGallery = ({ photos, scans = [], setPhotos, onAddMore, onEdit, onHome
                   </p>
                 </div>
               </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* iOS INSTALL INSTRUCTIONS MODAL */}
+      <AnimatePresence>
+        {showIosInstallModal && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[6000] flex items-center justify-center p-6 bg-slate-950/90 backdrop-blur-md"
+            onClick={() => setShowIosInstallModal(false)}
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm bg-slate-900 border border-white/10 rounded-[2rem] p-8 shadow-2xl relative"
+            >
+              <button 
+                onClick={() => setShowIosInstallModal(false)}
+                className="absolute top-6 right-6 z-[6000] p-3 bg-white/5 border border-white/10 rounded-full text-slate-400 hover:text-white hover:bg-white/10 shadow-lg active:scale-90 transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                    <Smartphone className="w-6 h-6" />
+                </div>
+                <div>
+                    <h3 className="text-sm font-black uppercase tracking-widest text-white">Install App</h3>
+                    <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Add to Home Screen</p>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                 <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0 text-white font-black text-sm">1</div>
+                    <p className="text-xs text-slate-300 font-bold leading-relaxed pt-1">
+                        Tap the <Share className="w-4 h-4 inline-block mx-1 text-indigo-400" /> <strong className="text-white">Share</strong> button in your browser's menu bar.
+                    </p>
+                 </div>
+                 <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0 text-white font-black text-sm">2</div>
+                    <p className="text-xs text-slate-300 font-bold leading-relaxed pt-1">
+                        Scroll down and tap <strong className="text-white">"Add to Home Screen"</strong> <PlusSquare className="w-4 h-4 inline-block mx-1 text-slate-400" /> to install QuickPDF locally.
+                    </p>
+                 </div>
+              </div>
+
+              <button 
+                 onClick={() => setShowIosInstallModal(false)}
+                 className="w-full mt-8 py-4 rounded-2xl bg-indigo-500 text-white text-[11px] font-black uppercase tracking-widest shadow-xl shadow-indigo-500/20 active:scale-95 transition-all"
+              >
+                  Got it!
+              </button>
             </motion.div>
           </motion.div>
         )}

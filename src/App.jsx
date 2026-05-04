@@ -14,6 +14,7 @@ function App() {
   const [editingPhoto, setEditingPhoto] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [autoOpenExport, setAutoOpenExport] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
 
   // Load from IndexedDB
   useEffect(() => {
@@ -34,6 +35,18 @@ function App() {
   useEffect(() => {
     saveToDB('scans', 'history', scans);
   }, [scans]);
+
+  // Capture PWA Install Prompt
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
 
   // 🚀 NAVIGATION & HARDWARE BACK BUTTON TRAP
   const viewRef = useRef(view);
@@ -252,6 +265,7 @@ function App() {
             onUpload={handleUpload}
             autoOpenExport={autoOpenExport}
             onExportOpened={() => setAutoOpenExport(false)}
+            deferredPrompt={deferredPrompt}
           />
         )}
 
