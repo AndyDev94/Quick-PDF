@@ -14,27 +14,38 @@ function App() {
   const [editingPhoto, setEditingPhoto] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [autoOpenExport, setAutoOpenExport] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
 
   // Load from IndexedDB
   useEffect(() => {
     const loadData = async () => {
-      const savedPhotos = await getFromDB('photos', 'current_session');
-      const savedScans = await getFromDB('scans', 'history');
-      if (savedPhotos) setPhotos(savedPhotos);
-      if (savedScans) setScans(savedScans);
+      try {
+        const savedPhotos = await getFromDB('photos', 'current_session');
+        const savedScans = await getFromDB('scans', 'history');
+        if (savedPhotos && savedPhotos.length > 0) setPhotos(savedPhotos);
+        if (savedScans && savedScans.length > 0) setScans(savedScans);
+      } catch (err) {
+        console.error("Failed to load history:", err);
+      } finally {
+        setIsLoaded(true);
+      }
     };
     loadData();
   }, []);
 
-  // Save to IndexedDB
+  // Save to IndexedDB (Only after loading is complete to prevent overwriting with initial empty state)
   useEffect(() => {
-    saveToDB('photos', 'current_session', photos);
-  }, [photos]);
+    if (isLoaded) {
+      saveToDB('photos', 'current_session', photos);
+    }
+  }, [photos, isLoaded]);
 
   useEffect(() => {
-    saveToDB('scans', 'history', scans);
-  }, [scans]);
+    if (isLoaded) {
+      saveToDB('scans', 'history', scans);
+    }
+  }, [scans, isLoaded]);
 
   // Capture PWA Install Prompt
   useEffect(() => {
