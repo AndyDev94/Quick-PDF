@@ -64,7 +64,13 @@ const CameraView = ({ onCapture, onCancel, onSaveAndExport }) => {
       });
       streamRef.current = newStream;
       setStream(newStream);
-      if (videoRef.current) videoRef.current.srcObject = newStream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = newStream;
+        // 🚀 Explicitly play to prevent black screen on some mobile browsers
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current.play().catch(e => console.error("Video play failed", e));
+        };
+      }
       setError(null);
     } catch (err) {
       setError("Camera Access Denied");
