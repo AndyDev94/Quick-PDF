@@ -134,7 +134,7 @@ const ImageEditor = ({ photo, onSave, onCancel, onRemove }) => {
   const [lastPanPos, setLastPanPos] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   
-  const [cropMode, setCropMode] = useState(true);
+  const [cropMode, setCropMode] = useState(!photo.croppedAreaPercentages);
   const [isPanelMaximized, setIsPanelMaximized] = useState(false);
   const [isDeleteConfirming, setIsDeleteConfirming] = useState(false);
   const [labelToDelete, setLabelToDelete] = useState(null);
@@ -351,7 +351,6 @@ const ImageEditor = ({ photo, onSave, onCancel, onRemove }) => {
         setCroppedAreaPerc(photo.croppedAreaPercentages);
         if (photo.croppedArea) setCroppedAreaPixels(photo.croppedArea);
         setIsCropping(false);
-        setCropMode(false); // 🚀 Start in isolated mode if already cropped
     } else {
       let newCrop;
       const imgAspect = width / height;
@@ -679,6 +678,7 @@ const ImageEditor = ({ photo, onSave, onCancel, onRemove }) => {
                                                 setZoomLevel(1);
                                                 setPanOffset({ x: 0, y: 0 });
                                                 setCropMode(true);
+                                                setIsPanelMaximized(false);
                                                 if (!crop) {
                                                     setCrop({ unit: '%', width: 90, height: 90, x: 5, y: 5 });
                                                 }
@@ -899,7 +899,7 @@ const ImageEditor = ({ photo, onSave, onCancel, onRemove }) => {
                 initial={{ opacity: 0, scale: 0.8, x: 20 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0.8, x: 20 }}
-                className="fixed right-8 bottom-32 z-[1000001] flex flex-col items-center gap-6 bg-slate-900/80 backdrop-blur-3xl p-5 rounded-full border border-white/20 shadow-[0_30px_100px_rgba(0,0,0,1)] pointer-events-auto"
+                className="fixed right-4 md:right-8 bottom-52 z-[1000001] flex flex-col items-center gap-6 bg-slate-900/80 backdrop-blur-3xl p-5 rounded-full border border-white/20 shadow-[0_30px_100px_rgba(0,0,0,1)] pointer-events-auto"
               >
                 <button 
                   onClick={resetPan}
