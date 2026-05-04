@@ -486,7 +486,7 @@ const ImageEditor = ({ photo, onSave, onCancel, onRemove }) => {
                         >
                             <img 
                                 src={photo.src} 
-                                className="max-h-full max-w-full w-auto h-auto object-contain block touch-none" 
+                                className="max-h-full max-w-full w-auto h-auto object-contain block" 
                                 style={{ 
                                     filter: `brightness(${brightness}%) ${getFilterCSS(filter)}`, 
                                     transition: 'filter 0.3s' 
@@ -894,12 +894,13 @@ const ImageEditor = ({ photo, onSave, onCancel, onRemove }) => {
           </div>
     
           <AnimatePresence>
-            {!isCropping && !isInteracting && (
+            {!cropMode && !isCropping && !isInteracting && (
               <motion.div 
                 initial={{ opacity: 0, scale: 0.8, x: 20 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0.8, x: 20 }}
-                className="fixed right-4 md:right-8 bottom-52 z-[1000001] flex flex-col items-center gap-6 bg-slate-900/80 backdrop-blur-3xl p-5 rounded-full border border-white/20 shadow-[0_30px_100px_rgba(0,0,0,1)] pointer-events-auto"
+                className="fixed z-[1000001] flex flex-col items-center gap-6 bg-slate-900/80 backdrop-blur-3xl p-5 rounded-full border border-white/20 shadow-[0_30px_100px_rgba(0,0,0,1)] pointer-events-auto"
+                style={{ right: '24px', bottom: '160px' }}
               >
                 <button 
                   onClick={resetPan}
