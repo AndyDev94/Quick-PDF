@@ -56,7 +56,7 @@ const RearrangeModal = ({ isOpen, onClose, photos, setPhotos, setPreviewIndex })
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
           exit={{ opacity: 0 }} 
-          className="absolute inset-0 bg-slate-950/98 backdrop-blur-3xl" 
+          className="absolute inset-0 bg-slate-950" 
         />
         <div className="relative h-full flex flex-col">
           {/* Header */}

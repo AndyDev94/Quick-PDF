@@ -449,7 +449,7 @@ const PhotoGallery = ({ photos, scans = [], setPhotos, onAddMore, onEdit, onHome
               animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }} 
               onClick={() => setShowAddModal(false)}
-              className="absolute inset-0 bg-slate-950/90 backdrop-blur-3xl" 
+              className="absolute inset-0 bg-slate-950" 
             />
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 40 }} 
@@ -633,7 +633,7 @@ const PhotoGallery = ({ photos, scans = [], setPhotos, onAddMore, onEdit, onHome
                     <Info className="w-6 h-6" />
                 </div>
                 <div>
-                    <h3 className="text-sm font-black uppercase tracking-widest text-white">Scanner Guide</h3>
+                    <h3 className="text-sm font-black uppercase tracking-widest text-white">QuickPDF Guide</h3>
                     <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">App Info & Usage</p>
                 </div>
               </div>
@@ -654,6 +654,14 @@ const PhotoGallery = ({ photos, scans = [], setPhotos, onAddMore, onEdit, onHome
                   <ul className="list-disc pl-4 space-y-2">
                     <li><strong>Inputs:</strong> JPG, PNG, WEBP from camera or gallery.</li>
                     <li><strong>Outputs:</strong> Compiled PDF document and individually saved JPGs.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-white font-bold mb-2">Offline & App Experience</h4>
+                  <ul className="list-disc pl-4 space-y-2">
+                    <li>Install QuickPDF as a <strong>Web App</strong> via the smartphone icon in the top-left for a full-screen, native-like experience.</li>
+                    <li>Once installed, QuickPDF works <strong>100% offline</strong> without an active internet connection.</li>
                   </ul>
                 </div>
 
