@@ -665,6 +665,18 @@ const PhotoGallery = ({ photos, scans = [], setPhotos, onAddMore, onEdit, onHome
                   </ul>
                 </div>
 
+                <div>
+                  <h4 className="text-white font-bold mb-2">Permission Troubleshooting</h4>
+                  <p className="text-[11px] text-slate-400 mb-3 leading-relaxed">
+                    If you see a message saying <em>"This site can't ask for your permission"</em>, it's an Android security feature.
+                  </p>
+                  <ul className="list-disc pl-4 space-y-2 text-[11px] text-slate-400">
+                    <li>Close any <strong>Bubbles or Overlays</strong> (like Messenger bubbles or screen recorders).</li>
+                    <li>Turn off any <strong>Blue Light Filters</strong> or "Night Mode" apps.</li>
+                    <li>Refresh the page and try again.</li>
+                  </ul>
+                </div>
+
                 <div className="pt-6 border-t border-white/10 text-center flex flex-col items-center gap-2">
                   <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-300 flex items-center gap-2">
                     Made with <span className="text-red-500 text-lg">❤️</span> by Aneesh
