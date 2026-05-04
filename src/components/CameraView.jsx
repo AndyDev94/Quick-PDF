@@ -52,27 +52,48 @@ const CameraView = ({ onCapture, onCancel, onSaveAndExport }) => {
     }
   }, [zoom, flashMode, stream]);
 
-  const startCamera = async () => {
+  const startCamera = async (isRetry = false) => {
     try {
-      if (streamRef.current) streamRef.current.getTracks().forEach(track => track.stop());
-      const newStream = await navigator.mediaDevices.getUserMedia({
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
+      
+      // 🚀 Give the hardware a moment to release (especially important for rear-to-front transitions)
+      await new Promise(resolve => setTimeout(resolve, isRetry ? 500 : 100));
+
+      const constraints = {
         video: {
           facingMode: facingMode,
-          width: { ideal: 1920 },
-          height: { ideal: 1080 }
+          width: { ideal: 4096 },
+          height: { ideal: 2160 }
         }
-      });
+      };
+
+      const newStream = await navigator.mediaDevices.getUserMedia(constraints);
       streamRef.current = newStream;
       setStream(newStream);
+      
       if (videoRef.current) {
         videoRef.current.srcObject = newStream;
-        // 🚀 Explicitly play to prevent black screen on some mobile browsers
+        // Explicitly trigger play on metadata load
         videoRef.current.onloadedmetadata = () => {
           videoRef.current.play().catch(e => console.error("Video play failed", e));
         };
       }
       setError(null);
+
+      // 🚀 AUTO-RECOVERY: If the feed is still black after 1.5s, try one automatic restart
+      if (!isRetry) {
+        setTimeout(() => {
+          if (videoRef.current && (videoRef.current.videoWidth === 0 || videoRef.current.paused)) {
+            console.warn("Camera feed appears stuck, attempting auto-restart...");
+            startCamera(true);
+          }
+        }, 1500);
+      }
     } catch (err) {
+      console.error("Camera startup error:", err);
       setError("Camera Access Denied");
     }
   };
@@ -388,9 +409,9 @@ const CameraView = ({ onCapture, onCancel, onSaveAndExport }) => {
                 autoPlay
                 playsInline
                 muted
-                className={`w-full h-full object-contain ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
+                className={`w-full h-full object-contain ${facingMode === 'user' ? '-scale-x-100' : ''}`}
                 style={{ 
-                  transform: capabilities.zoom ? (facingMode === 'user' ? 'scale-x(-1)' : 'none') : `scale(${zoom}) ${facingMode === 'user' ? 'scale-x(-1)' : ''}`,
+                  transform: capabilities.zoom ? 'none' : `scale(${zoom})`,
                   transition: capabilities.zoom ? 'none' : 'transform 0.1s linear'
                 }}
               />
